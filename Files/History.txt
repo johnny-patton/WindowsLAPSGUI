@@ -1,7 +1,16 @@
 Version History of Windows LAPS GUI
 ---------------------------------------
 
-This file contains information about changes for released versions of the Print Server Scripts utility.
+This file contains information about changes for released versions of the Windows LAPS utility.
+
+1.0.1			2025-12-29
+--------------------------
+- Updated all variables to be explicitly typed instead of implicitly typed (e.g. var).
+- Added version history file.
+- Added a description (e.g. "/d") to the PostBuildEvent command in the setup project to display the 
+	MSI installer name during a UAC prompt instead of a randomly generated name.
+- Cleaned up source code.
+
 
 1.0.0			2025-02-21
 --------------------------

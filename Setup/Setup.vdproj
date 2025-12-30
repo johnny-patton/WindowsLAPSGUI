@@ -63,6 +63,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_E7CD7DDB0F6142B5B3BB17406E1416DA"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_3B494D632F2C41BA8B9EB8B195F958DB"
         "MsmSig" = "8:_UNDEFINED"
@@ -70,13 +76,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_45ED623D28CF045F4F73D5C4C0A647B6"
+        "OwnerKey" = "8:_A5B9ACD4519B4385FECBF160C89B8653"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A5B9ACD4519B4385FECBF160C89B8653"
+        "OwnerKey" = "8:_45ED623D28CF045F4F73D5C4C0A647B6"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -330,6 +336,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E7CD7DDB0F6142B5B3BB17406E1416DA"
+            {
+            "SourcePath" = "8:..\\Files\\History.txt"
+            "TargetName" = "8:History.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_D0F4BF95BFA54FBEA2281992D09DE09C"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -386,15 +412,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Windows LAPS"
-        "ProductCode" = "8:{8FF7DAC1-5DDF-4E5C-B4F1-B3A9527CE595}"
-        "PackageCode" = "8:{F1C860DF-08C7-4826-95A4-7C7A2B4CCEE1}"
+        "ProductCode" = "8:{4A7E4A20-707E-47D0-826F-3DE45FC2650D}"
+        "PackageCode" = "8:{39C0C6EF-1718-4E21-8322-4704DF235813}"
         "UpgradeCode" = "8:{45AD1E63-E81D-4C80-B0D2-22C5E203AED8}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.0"
+        "ProductVersion" = "8:1.0.1"
         "Manufacturer" = "8:Johnny Patton"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
@@ -410,7 +436,7 @@
         "UseSystemSearchPath" = "11:TRUE"
         "TargetPlatform" = "3:1"
         "PreBuildEvent" = "8:"
-        "PostBuildEvent" = "8:\"%ProgramFiles(x86)%\\Windows Kits\\10\\bin\\10.0.26100.0\\x64\\signtool.exe\" sign /a /fd sha256 /td sha256 /tr http://timestamp.digicert.com \"$(BuiltOuputPath)\""
+        "PostBuildEvent" = "8:\"%ProgramFiles(x86)%\\Windows Kits\\10\\bin\\10.0.26100.0\\x64\\signtool.exe\" sign /a /fd sha256 /td sha256 /tr http://timestamp.digicert.com /d \"Windows LAPS GUI.msi\" \"$(BuiltOuputPath)\""
         "RunPostBuildEvent" = "3:0"
         }
         "Registry"
