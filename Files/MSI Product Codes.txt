@@ -1,6 +1,0 @@
-Version		MSI Product Code
------------------------------------------------		(Upgrade Code - {45AD1E63-E81D-4C80-B0D2-22C5E203AED8})
-
-1.0.1 - {4A7E4A20-707E-47D0-826F-3DE45FC2650D}
-
-1.0.0 - {8FF7DAC1-5DDF-4E5C-B4F1-B3A9527CE595}

@@ -30,31 +30,54 @@ namespace WindowsLAPSGUI
         {
             InitializeComponent();
         }
-        
+
         private void MainForm_Load(object sender, EventArgs e)
         {
-            //prerequisite checks
-            //PowerShell version 5.1
+            if (!CheckPrerequisites())
+            {
+                MessageBox.Show(
+                    "A required prerequisite is missing. The application will now exit.",
+                    "Startup Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+
+                // Close the form and exit the application cleanly
+                this.Close();
+                Application.Exit();
+            }
+        }
+
+        private bool CheckPrerequisites()
+        {
+
+            bool PreReqPass = true;
+            
+            // PowerShell version 5.1
             Collection<PSObject> psVersion = PowerShell.Create().AddScript("$PSVersionTable.PSVersion.ToString()").Invoke();
             if (!(psVersion.First().ToString().StartsWith("5.1")))
             {
-                MessageBox.Show("Windows PowerShell version 5.1 required!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Application.Exit();
+                MessageBox.Show("Windows PowerShell version 5.1 not found.", "Prerequisite Check", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                PreReqPass = false;
             }
-            //Windows LAPS cmdlets (included in the April 2023 CUs)
-            //LAPS cmdlets are only available in 64-bit mode, so the application build platform target must be set to "x64" to work
+
+            // Windows LAPS cmdlets (included in the April 2023 CUs)
+            // LAPS cmdlets are only available in 64-bit mode, so the application build platform target must be set to "x64" to work
             Collection<PSObject> lapsModule = PowerShell.Create().AddScript("Get-Module -Name Laps -ListAvailable").Invoke();
             if (!(lapsModule.Count > 0))
             {
-                MessageBox.Show("Windows LAPS PowerShell module not found!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Application.Exit();
+                MessageBox.Show("Windows LAPS PowerShell module not found.", "Prerequisite Check", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                PreReqPass = false;
             }
-            //Active Directory member
+
+            // Active Directory member
             if (System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName == string.Empty)
             {
-                MessageBox.Show("Computer must be a member of an Active Directory domain in order to run this program!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Application.Exit();
+                MessageBox.Show("Computer is not a member of an Active Directory domain.", "Prerequisite Check", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                PreReqPass = false;
             }
+
+            return PreReqPass;
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -74,7 +97,7 @@ namespace WindowsLAPSGUI
                 string pcName = string.Empty, domain = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
                 try
                 {
-                    //search AD for the computer name provided
+                    // Search AD for the computer name provided
                     using (PrincipalContext pcd = new PrincipalContext(ContextType.Domain, domain))
                     {
                         ComputerPrincipal pc = ComputerPrincipal.FindByIdentity(pcd, IdentityType.SamAccountName, $"{edtComputerName.Text}$");
@@ -85,12 +108,12 @@ namespace WindowsLAPSGUI
                 {
                     MessageBox.Show("No computer object found that matches the information provided.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    MessageBox.Show("An unknown error occurred.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                
-                if (!(pcName == string.Empty)) //computer object found in AD
+
+                if (!(pcName == string.Empty)) // Computer object found in AD
                 {
                     try
                     {
@@ -100,7 +123,7 @@ namespace WindowsLAPSGUI
                             ps.AddScript($@"Get-LapsADPassword -Identity ""{pcName}"" -AsPlainText -IncludeHistory | Select-Object ComputerName,Password,PasswordUpdateTime,ExpirationTimestamp,Source");
                             Collection<PSObject> result = ps.Invoke();
                             int count = result.Count;
-                            if (result.First().Properties["Source"].Value.ToString() == "LegacyLapsCleartextPassword")  //Microsoft LAPS
+                            if (result.First().Properties["Source"].Value.ToString() == "LegacyLapsCleartextPassword")  // Microsoft LAPS
                             {
                                 computerModel.Add(new ComputerModel
                                 {
@@ -113,7 +136,7 @@ namespace WindowsLAPSGUI
                                 edtPassword.Text = computerModel[0].Password;
                                 edtExpiration.Text = computerModel[0].ExpirationTimestamp;
                             }
-                            else  //Windows LAPS
+                            else  // Windows LAPS
                             {
                                 for (int i = 0; i < count; i++)
                                 {
@@ -166,14 +189,14 @@ namespace WindowsLAPSGUI
                         this.Refresh();
                         MessageBox.Show("Computer does not have a LAPS policy applied.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         edtPassword.Clear();
                         edtExpiration.Clear();
                         lstPwdHistory.Items.Clear();
                         btnSet.Visible = false;
                         this.Refresh();
-                        MessageBox.Show("An unknown error occurred.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -186,7 +209,7 @@ namespace WindowsLAPSGUI
 
         private void btnSet_Click(object sender, EventArgs e)
         {
-            //Button should only be shown when a valid computer object is found in AD
+            // Button should only be shown when a valid computer object is found in AD
             Collection<PSObject> setExpiryTime = PowerShell.Create().AddScript($@"Set-LapsADPasswordExpirationTime -Identity {edtComputerName.Text} -WhenEffective (Get-Date -Date ""{dteNewPwdEpiry.Text}"")").Invoke();
             if (setExpiryTime.First().Properties["Status"].Value.ToString() == "PasswordReset")
             {
